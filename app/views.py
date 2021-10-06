@@ -49,6 +49,7 @@ class userSelf(APIView):
 
     def get(self, request):
         auth = request.META["HTTP_AUTHORIZATION"].split()
+        print(auth)
         if len(auth) == 2:
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
@@ -67,7 +68,7 @@ class userSelf(APIView):
                 usr = AppUsers.objects.filter(username=uname).first()
 
         if (
-            data.get("username")
+            (data.get("username") != uname)
             or data.get("account_created")
             or data.get("account_updated")
         ):

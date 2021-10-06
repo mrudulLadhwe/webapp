@@ -46,3 +46,11 @@ Perform CRU Operation on user using POST, PUT, GET http requests
   - black linter (For code formatting)
   - psycopg2 (For postgreSQL connectivity)
   - django-rest-framework (For Rest API's)
+
+## Unit Test
+  - In order to run unit test use the following command
+  - This project has two test cases 
+    - For Post request testing 
+    - For Get request testing for invalid user
+  - `python manage.py test`
+  
