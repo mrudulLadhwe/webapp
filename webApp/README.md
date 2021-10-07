@@ -1,3 +1,4 @@
+@@ -1,56 +0,0 @@
 # webapp
 
 ## Description
@@ -22,6 +23,8 @@ Perform CRU Operation on user using POST, PUT, GET http requests
 - Install requirement.txt using following command 
     - `pip install -r requirement.txt`
     - You need to be inside project repo before running above command
+- Run the server 
+  - `python manage.py runserver`
 - Install pgadmin for your device and set username and password also create a database for your webapp
 - Change you database connectivity inside settings.py in your django app
     - Go to DATABASE variable
