@@ -1,130 +1,59 @@
-@@ -1,129 +0,0 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+@@ -1,56 +0,0 @@
+# webapp
 
-# C extensions
-*.so
+## Description
+Perform CRU Operation on user using POST, PUT, GET http requests
+## Tech Stack
+- Python
+- Django Framework
+- PostgreSQL
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+## Features
+- Django Rest Framework
+- Rest API's
+- Basic Authentication 
+- Serializer's
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+## How to run the project
+- Clone this repo and go inside repo in you local machine
+- Create a virtual env using following command (windows)
+    - `pip install virtualenvwrapper-win`
+    - `virtualenv yourprojectenv`
+    - `yourprojectenv\Scripts\activate`
+- Install requirement.txt using following command 
+    - `pip install -r requirement.txt`
+    - You need to be inside project repo before running above command
+- Run the server 
+  - `python manage.py runserver`
+- Install pgadmin for your device and set username and password also create a database for your webapp
+- Change you database connectivity inside settings.py in your django app
+    - Go to DATABASE variable
+    - Change the following things :-
+      - NAME which is your Database Name
+      - USER which is `postgres` by default
+      - PASSWORD which is your user password, default it is your pgadmin application password
+- Run project using
+    `python manage.py runserver`
+- Go to `localhost:8000` to check your django application is running or not
+- Once your project is running successfully you need to perform migration before using API's
+- Steps to perform migration:-
+  - `python manage.py makemigrations`
+  - `python manage.py migrate`
+- If you want to access Django Admin panel you will need to create super user for the same.
+    - `python manage.py createsuperuser`
+    - Enter username and password you want to set up
+    - Go check user is created successfully runserver and go to `localhost:8000/admin` and enter your creds
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+## External Lib 
+  - bcrypt (For password hashing)
+  - black linter (For code formatting)
+  - psycopg2 (For postgreSQL connectivity)
+  - django-rest-framework (For Rest API's)
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
+## Unit Test
+  - In order to run unit test use the following command
+  - This project has two test cases 
+    - For Post request testing 
+    - For Get request testing for invalid user
+  - `python manage.py test`
+  
