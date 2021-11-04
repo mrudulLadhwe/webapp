@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,8 +26,9 @@ SECRET_KEY = "django-insecure-5_i*09m!(=ues1do@+xx#!8w!$txieobgaw)zwumk_jq9r#@#7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
+CORS_ALLOWED_ORIGINS = ["*"]
 
 # Application definition
 
@@ -79,11 +81,11 @@ WSGI_APPLICATION = "webApp.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "webApp",
-        "USER": "postgres",
-        "PASSWORD": "postgre@294",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": os.environ.get("POSTGRES_DB", "webApp"),
+        "USER": os.environ.get("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgre294"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -142,3 +144,9 @@ AUTH_USER_MODEL = "app.AppUsers"
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
 ]
+
+# AWS S3 setup
+
+AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME", "us-east-1")
+
+AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")

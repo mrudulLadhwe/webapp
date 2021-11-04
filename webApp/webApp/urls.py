@@ -22,4 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("v1/user", views.user.as_view()),
     path("v1/user/self", views.userSelf.as_view()),
+    path("v1/user/self/pic", views.profilePic.as_view())
 ]
