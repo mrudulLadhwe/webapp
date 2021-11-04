@@ -22,8 +22,13 @@ class AppUsers(AbstractUser):
     account_updated = models.DateTimeField(
         auto_now=True, blank=True, null=True, editable=False
     )
+    file_name = models.CharField(max_length=1000, blank=True, null=True)
+    url = models.CharField(max_length=500, blank=True, null=True)
+    upload_date = models.DateField(
+        auto_now_add=True, blank=True, null=True, editable=False
+    )
 
-    REQUIRED_FIELDS = ["first_name", "last_name", "password"]
+    REQUIRED_FIELDS = ["first_name", "last_name", "password", "file_name", "url"]
 
     class Meta:
         verbose_name = "Web App User"
@@ -31,23 +36,3 @@ class AppUsers(AbstractUser):
 
     def __str__(self) -> str:
         return self.first_name + " " + self.last_name
-
-
-# class WebAppUsers(models.Model):
-#     uuid = models.UUIDField(
-#         unique=True, default=uuid.uuid4, editable=False, primary_key=True
-#     )
-#     email = models.EmailField(max_length=254)
-#     username = models.EmailField(max_length=254, unique=True, blank=True, null=True)
-#     password = models.CharField(max_length=100)
-#     first_name = models.CharField(max_length=30)
-#     last_name = models.CharField(max_length=30)
-#     account_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-#     account_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-#     class Meta:
-#         verbose_name = "Web App User"
-#         verbose_name_plural = "Web App Users"
-
-#     def __str__(self) -> str:
-#         return self.first_name + " " + self.last_name

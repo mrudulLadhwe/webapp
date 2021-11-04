@@ -16,4 +16,15 @@ class WebAppUserSerializer(serializers.Serializer):
         model = AppUsers
 
 
+class UserProfilePic(serializers.Serializer):
+    file_name = serializers.CharField()
+    id = serializers.UUIDField(source="uuid")
+    url = serializers.CharField()
+    upload_date = serializers.DateField()
+    user_id = serializers.UUIDField(source="uuid")
+
+    class Meta:
+        model = AppUsers
+
+
 # fields = "__all__"
