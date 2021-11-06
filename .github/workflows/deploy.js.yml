@@ -29,9 +29,17 @@ jobs:
       # - name: change directory
       #   run: cd webApp
       - name: Install requirements # install application requirements
-        run: sudo pip install -r requirement.txt
+        run: |
+          ls
+          cd webApp
+          ls
+          sudo pip install -r requirement.txt
       - name: Check all intallations # check code formatting
-        run:  sudo pip freeze
+        run:  |
+          ls
+          cd webApp
+          ls
+          sudo pip freeze
       - name: Check for migrations # check code formatting
         run:  |
           ls
