@@ -1,8 +1,9 @@
 #!/bin/bash
 
-cd /home/ubuntu/webapp/webApp
+cd /home/ubuntu/webapp
 ls
 sudo apt install -y python3-pip
+cd webApp
 sudo pip install -r requirement.txt
 pip freeze
 ls
