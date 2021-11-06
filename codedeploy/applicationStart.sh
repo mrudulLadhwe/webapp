@@ -1,4 +1,5 @@
 #!/bin/bash
 
 cd /home/ubuntu/webapp
-sudo nohup node server.js >> debug.log 2>&1 &
+sudo python3 manage.py migrate
+sudo python3 manage.py runserver 0.0.0.0:8001
