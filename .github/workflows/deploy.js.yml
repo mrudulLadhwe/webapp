@@ -51,7 +51,7 @@ jobs:
           ls
           cd webApp
           ls
-          python3 manage.py migrate
+          sudo python3 manage.py migrate
       # - name: Run Test # running tests
       #   run: python manage.py test
       - name: Build Deployment Artifact
