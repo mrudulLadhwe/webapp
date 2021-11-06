@@ -1,0 +1,69 @@
+name: Code Deploy 
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '2.x', '3.x', 'pypy-2.7', 'pypy-3.6', 'pypy-3.7' ]
+    name: Python ${{ matrix.python-version }} sample
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - name: Install pip
+        run: sudo apt install python3-pip
+      - name: Install psycopg2 # checking the python version to see if 3.x is installed.
+        run: sudo apt-get install -y python3-psycopg2
+      - name: Install requirements # install application requirements
+        run: sudo pip install -r requirement.txt
+      - name: Check for migrations # check code formatting
+        run: sudo python3 manage.py makemigrations
+      - name: Run Migrations # run migrations to create table in side car db container
+        run: python3 manage.py migrate
+      # - name: Run Test # running tests
+      #   run: python manage.py test
+      - name: Build Deployment Artifact
+        run: | 
+          mkdir codedeploy_artifact
+          zip -r build_artifact .
+          pwd
+          mv build_artifact.zip codedeploy_artifact
+          cd codedeploy_artifact
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{secrets.AWS_REGION}}
+      - name: Push artifact to s3
+        run: |
+          aws s3 sync ./codedeploy_artifact s3://${{secrets.CODEDEPLOY_BUCKET}}
+          echo ${{secrets.CODEDEPLOY_BUCKET}}
+      - name: CodeDeploy API call
+        run: |
+          output=$(aws deploy create-deployment \
+            --application-name csye6225-webapp \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name csye6225-webapp-deployment \
+            --description "CSYE6255 - CodeDeploy" \
+            --s3-location bucket=${{secrets.CODEDEPLOY_BUCKET}},key=build_artifact.zip,bundleType=zip \
+            --region ${{secrets.AWS_REGION}} \
+            --output json)
+            depId=$(echo $output | jq -r '.deploymentId')
+            aws deploy wait deployment-successful --deployment-id $depId
+        env:
+            AWS_REGION: ${{ secrets.AWS_REGION }}
+            AWS_CODEDEPLOY_BUCKET: ${{secrets.CODEDEPLOY_BUCKET}}
+          
