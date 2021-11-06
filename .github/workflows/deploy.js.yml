@@ -33,7 +33,9 @@ jobs:
       - name: Check for migrations # check code formatting
         run: sudo python3 manage.py makemigrations
       - name: Run Migrations # run migrations to create table in side car db container
-        run: python3 manage.py migrate
+        run: |
+          cd webApp
+          python3 manage.py migrate
       # - name: Run Test # running tests
       #   run: python manage.py test
       - name: Build Deployment Artifact
