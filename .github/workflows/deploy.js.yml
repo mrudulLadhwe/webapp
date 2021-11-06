@@ -26,8 +26,10 @@ jobs:
         run: sudo apt install python3-pip
       - name: Install psycopg2 # checking the python version to see if 3.x is installed.
         run: sudo apt-get install -y python3-psycopg2
+      - name: change directory
+        run: cd webApp
       - name: Install requirements # install application requirements
-        run: sudo pip install -r cd webApp/requirement.txt
+        run: sudo pip install -r requirement.txt
       - name: Check for migrations # check code formatting
         run: sudo python3 manage.py makemigrations
       - name: Run Migrations # run migrations to create table in side car db container
