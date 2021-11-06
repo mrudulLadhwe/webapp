@@ -46,12 +46,12 @@ jobs:
           cd webApp
           ls
           sudo python3 manage.py makemigrations
-      - name: Run Migrations # run migrations to create table in side car db container
-        run:  |
-          ls
-          cd webApp
-          ls
-          sudo python3 manage.py migrate
+      # - name: Run Migrations # run migrations to create table in side car db container
+      #   run:  |
+      #     ls
+      #     cd webApp
+      #     ls
+      #     sudo python3 manage.py migrate
       # - name: Run Test # running tests
       #   run: python manage.py test
       - name: Build Deployment Artifact
