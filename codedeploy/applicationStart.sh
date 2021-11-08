@@ -11,4 +11,4 @@ sudo apt-get install -y python3-psycopg2
 pip freeze
 ls
 sudo python3 manage.py migrate
-sudo nohup python3 manage.py runserver 0.0.0.0:8001
+sudo nohup python3 manage.py runserver 0.0.0.0:8001 > /dev/null 2>&1 &
