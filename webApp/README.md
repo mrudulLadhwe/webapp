@@ -20,7 +20,7 @@ Perform CRU Operation on user using POST, PUT, GET http requests
     - `pip install virtualenvwrapper-win`
     - `virtualenv yourprojectenv`
     - `yourprojectenv\Scripts\activate`
-- Install requirement.txt using following command 
+- Install requirement.txt using following command :-
     - `pip install -r requirement.txt`
     - You need to be inside project repo before running above command
 - Run the server 
