@@ -40,7 +40,7 @@ jobs:
           cd webApp
           ls
           sudo pip freeze
-      - name: Check for migrations # check code formatting
+      - name: Check for migrations # check code formatting1
         run:  |
           ls
           cd webApp
