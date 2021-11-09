@@ -40,12 +40,6 @@ jobs:
           cd webApp
           ls
           sudo pip freeze
-      - name: Run test case
-        run: |
-             ls
-             cd webApp
-             ls
-             sudo python3 manage.py test
       - name: Check for migrations # check code formatting1
         run:  |
           ls
@@ -81,6 +75,12 @@ jobs:
             --output json)
             depId=$(echo $output | jq -r '.deploymentId')
             aws deploy wait deployment-successful --deployment-id $depId
+      - name: Run test case
+        run: |
+             ls
+             cd webApp
+             ls
+             sudo python3 manage.py test
         env:
             AWS_REGION: ${{ secrets.AWS_REGION }}
             AWS_CODEDEPLOY_BUCKET: ${{secrets.CODEDEPLOY_BUCKET}}
