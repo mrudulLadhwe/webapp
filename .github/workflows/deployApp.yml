@@ -39,8 +39,7 @@ jobs:
           ls
           cd webApp
           ls
-          sudo pip freeze 
-          python manage.py test
+          sudo pip freeze
       - name: Run test case
         run: |
              ls
