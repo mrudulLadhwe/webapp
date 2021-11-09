@@ -34,13 +34,19 @@ jobs:
           cd webApp
           ls
           sudo pip install -r requirement.txt
-      - name: Check all intallations and test case # check code formatting
+      - name: Check all intallations # check code formatting
         run:  |
           ls
           cd webApp
           ls
           sudo pip freeze 
           python manage.py test
+      - name: Run test case
+        run: |
+             ls
+             cd webApp
+             ls
+             sudo python3 manage.py test
       - name: Check for migrations # check code formatting1
         run:  |
           ls
