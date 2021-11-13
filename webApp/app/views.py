@@ -19,6 +19,7 @@ import base64
 import boto3
 from django.conf import settings
 
+
 # Create your views here.
 class user(APIView):
     def post(self, request):

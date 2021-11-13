@@ -50,7 +50,7 @@ Perform CRU Operation on user using POST, PUT, GET http requests
   - psycopg2 (For postgreSQL connectivity)
   - django-rest-framework (For Rest API's)
 
-## Unit Test
+## Unit Test -
   - In order to run unit test use the following command
   - This project has two test cases 
     - For Post request testing 
