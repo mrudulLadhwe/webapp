@@ -150,3 +150,31 @@ PASSWORD_HASHERS = [
 AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME", "us-east-1")
 
 AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "aws": {
+            "format": "%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "watchtower": {
+            "level": "INFO",
+            "class": "watchtower.CloudWatchLogHandler",
+            # From step 2
+            "boto3_session": logger_boto3_session,
+            "log_group": "CWOSLogs",
+            # Different stream for each environment
+            "stream_name": f"logs",
+            "formatter": "aws",
+        },
+        "console": {"class": "logging.StreamHandler", "formatter": "aws",},
+    },
+    "loggers": {
+        # Use this logger to send data just to Cloudwatch
+        "watchtower": {"level": "INFO", "handlers": ["watchtower"], "propogate": False,}
+    },
+}
