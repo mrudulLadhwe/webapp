@@ -42,7 +42,7 @@ Perform CRU Operation on user using POST, PUT, GET http requests
 - If you want to access Django Admin panel you will need to create super user for the same.
     - `python manage.py createsuperuser`
     - Enter username and password you want to set up
-    - Go check user is created successfully runserver and go to `localhost:8000/admin` and enter your creds
+    - Go check user is created successfully runserver and go to `localhost:8000/admin` and enter your credentials
 
 ## External Lib 
   - bcrypt (For password hashing)
