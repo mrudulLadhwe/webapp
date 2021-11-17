@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from boto3.session import Session
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -150,6 +151,11 @@ PASSWORD_HASHERS = [
 AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME", "us-east-1")
 
 AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")
+
+AWS_DEFAULT_REGION = os.environ.get("AWS_REGION_NAME", "us-east-1") 
+logger_boto3_session = Session(
+ region_name=AWS_DEFAULT_REGION
+)
 
 LOGGING = {
     "version": 1,
