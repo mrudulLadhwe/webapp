@@ -183,3 +183,8 @@ class profilePic(APIView):
                 except Exception as err:
                     return Response(status=status.HTTP_404_NOT_FOUND)
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class healthStatus(APIView):
+    def get(self, request):
+        return Response(status=status.HTTP_200_OK)
