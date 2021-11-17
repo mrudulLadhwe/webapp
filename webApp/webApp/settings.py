@@ -156,7 +156,7 @@ AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")
 #logger
 
 AWS_DEFAULT_REGION = os.environ.get("AWS_REGION_NAME", "us-east-1") 
-boto3_logs_client = boto3.client(region_name=AWS_DEFAULT_REGION)
+boto3_logs_client = boto3.client('cloudwatch',region_name=AWS_DEFAULT_REGION)
 
 
 LOGGING = {
