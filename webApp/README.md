@@ -32,7 +32,7 @@ Perform CRU Operation on user using POST, PUT, GET http requests
       - NAME which is your Database Name
       - USER which is `postgres` by default
       - PASSWORD which is your user password, default it is your pgadmin application password
-- Run project using
+- Run project using - 
     `python manage.py runserver`
 - Go to `localhost:8000` to check your django application is running or not
 - Once your project is running successfully you need to perform migration before using API's
