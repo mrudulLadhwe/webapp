@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-from boto3.session import Session
+import boto3
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,35 +152,46 @@ AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME", "us-east-1")
 
 AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")
 
+#logger
+
 AWS_DEFAULT_REGION = os.environ.get("AWS_REGION_NAME", "us-east-1") 
-logger_boto3_session = Session(
- region_name=AWS_DEFAULT_REGION
-)
+boto3_logs_client = boto3.client("logs", region_name=AWS_DEFAULT_REGION)
+
 
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "aws": {
-            "format": "%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'root': {
+        'level': logging.ERROR,
+        'handlers': ['console'],
+    },
+    'formatters': {
+        'simple': {
+            'format': "%(asctime)s [%(levelname)-8s] %(message)s",
+            'datefmt': "%Y-%m-%d %H:%M:%S"
+        },
+        'aws': {
+            # you can add specific format for aws here
+            'format': "%(asctime)s [%(levelname)-8s] %(message)s",
+            'datefmt': "%Y-%m-%d %H:%M:%S"
         },
     },
-    "handlers": {
-        "watchtower": {
-            "level": "INFO",
-            "class": "watchtower.CloudWatchLogHandler",
-            # From step 2
-            "boto3_session": logger_boto3_session,
-            "log_group": "CWOSLogs",
-            # Different stream for each environment
-            "stream_name": f"logs",
-            "formatter": "aws",
+    'handlers': {
+        'watchtower': {
+            'level': 'DEBUG',
+            'class': 'watchtower.CloudWatchLogHandler',
+            'boto3_client': boto3_logs_client,
+            'log_group_name': 'MyLogGroupName',
+            'log_stream_name': 'MyStreamName',
+            'formatter': 'aws',
         },
-        "console": {"class": "logging.StreamHandler", "formatter": "aws",},
     },
-    "loggers": {
-        # Use this logger to send data just to Cloudwatch
-        "watchtower": {"level": "INFO", "handlers": ["watchtower"], "propogate": False,}
+    'loggers': {
+        'django': {
+            'level': 'INFO',
+            'handlers': ['watchtower'],
+            'propagate': False,
+        },
+     
     },
 }
