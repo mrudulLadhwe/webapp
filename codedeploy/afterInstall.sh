@@ -6,3 +6,4 @@ echo "#CSYE6225: doing after install: remove zip from webapp folder"
 pwd
 ls -lrt
 cd ..
+
