@@ -33,10 +33,11 @@ def my_decorator(func):
     return wrapper_function
 
 # Create your views here.
-counter = statsd.Counter("Counter")
-counterGet = statsd.Counter("Counter")
+
+
 class user(APIView):
     def post(self, request):
+        counter = statsd.Counter("Counter")
         counter.increment('Post_api')
         start_time = datetime.now()
         data = request.data
@@ -75,6 +76,8 @@ class userSelf(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        counter = statsd.Counter("Counter")
+        counter.increment('Get_api')
         start_time = datetime.now()
         counterGet.increment('Get_api')
         auth = request.META["HTTP_AUTHORIZATION"].split()
@@ -93,6 +96,8 @@ class userSelf(APIView):
         return Response("Error getting user", status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
+        counter = statsd.Counter("Counter")
+        counter.increment('Put_api')
         start_time = datetime.now()
         data = request.data
         # get user
@@ -138,6 +143,8 @@ class profilePic(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        counter = statsd.Counter("Counter")
+        counter.increment('Profile_Get_api')
         start_time = datetime.now()
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
@@ -152,6 +159,8 @@ class profilePic(APIView):
         return Response(status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
+        counter = statsd.Counter("Counter")
+        counter.increment('Profile_Post_api')
         start_time = datetime.now()
         data = request.data
         usrid = None
@@ -206,6 +215,8 @@ class profilePic(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
     def delete(self, request):
+        counter = statsd.Counter("Counter")
+        counter.increment('Profile_Delete_api')
         start_time = datetime.now()
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
