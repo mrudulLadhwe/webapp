@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import boto3
-import logging, watchtower
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -154,45 +153,32 @@ AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME", "us-east-1")
 AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")
 
 #logger
-
-AWS_DEFAULT_REGION = os.environ.get("AWS_REGION_NAME", "us-east-1") 
-boto3_logs_client = boto3.client('cloudwatch',region_name=AWS_DEFAULT_REGION)
-
-
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'root': {
-        'level': logging.ERROR,
-        'handlers': ['console'],
-    },
-    'formatters': {
-        'simple': {
-            'format': "%(asctime)s [%(levelname)-8s] %(message)s",
-            'datefmt': "%Y-%m-%d %H:%M:%S"
-        },
-        'aws': {
-            # you can add specific format for aws here
-            'format': "%(asctime)s [%(levelname)-8s] %(message)s",
-            'datefmt': "%Y-%m-%d %H:%M:%S"
+    "version": 1,
+    "disable_existing_loggers": False,
+    "root": {"level": "INFO", "handlers": ["file"]},
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "/var/log/django.log",
+            "formatter": "app",
         },
     },
-    'handlers': {
-        'watchtower': {
-            'level': 'DEBUG',
-            'class': 'watchtower.CloudWatchLogHandler',
-            'boto3_client': boto3_logs_client,
-            'log_group_name': 'MyLogGroupName',
-            'log_stream_name': 'MyStreamName',
-            'formatter': 'aws',
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True
         },
     },
-    'loggers': {
-        'django': {
-            'level': 'INFO',
-            'handlers': ['watchtower'],
-            'propagate': False,
+    "formatters": {
+        "app": {
+            "format": (
+                u"%(asctime)s [%(levelname)-8s] "
+                "(%(module)s.%(funcName)s) %(message)s"
+            ),
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
-     
     },
 }
