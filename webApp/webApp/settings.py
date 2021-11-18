@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "app",
     "rest_framework.authtoken",
+    "django_statsd"
 ]
 
 MIDDLEWARE = [
+    "django_statsd.middleware.StatsdMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -53,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_statsd.middleware.StatsdMiddlewareTimer"
 ]
 
 ROOT_URLCONF = "webApp.urls"
@@ -162,7 +165,7 @@ LOGGING = {
     # Handlers #############################################################
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'django.log',
         },
@@ -175,9 +178,13 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG')
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO')
         },
     },
 }
+
+#stats
+STATSD_HOST = 'localhost'
+STATSD_PORT = 8125

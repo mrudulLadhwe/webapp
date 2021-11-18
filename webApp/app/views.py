@@ -19,12 +19,17 @@ import base64
 import boto3
 from django.conf import settings
 import logging
+from datetime import datetime
+import statsd
 
 logger = logging.getLogger(__name__)
 
 # Create your views here.
 class user(APIView):
     def post(self, request):
+        counter = statsd.Counter("My post API counter")
+        counter.increment('counter_name')
+        start_time = datetime.now()
         data = request.data
 
         try:
@@ -44,6 +49,8 @@ class user(APIView):
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             logger.debug("User Created")
+            end_time = datetime.now()
+            logger.info(f"Time for POST api: {end_time - start_time}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response(
