@@ -20,7 +20,7 @@ import boto3
 from django.conf import settings
 import logging
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger("django")
 
 # Create your views here.
 class user(APIView):
