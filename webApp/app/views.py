@@ -20,6 +20,7 @@ import boto3
 from django.conf import settings
 import logging
 
+logger = logging.getLogger(__file__)
 
 # Create your views here.
 class user(APIView):
@@ -41,7 +42,6 @@ class user(APIView):
             usr.set_password(data["password"])
             usr.save()
             serializer = WebAppUserSerializer(usr, many=False)
-            logger = logging.getLogger("watchtower")
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
