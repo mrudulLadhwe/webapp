@@ -34,6 +34,7 @@ def my_decorator(func):
 
 # Create your views here.
 counter = statsd.Counter("Counter")
+counterGet = statsd.Counter("Counter")
 class user(APIView):
     def post(self, request):
         counter.increment('Post_api')
@@ -71,6 +72,7 @@ class userSelf(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        counterGet.increment('Get_api')
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
         if len(auth) == 2:
