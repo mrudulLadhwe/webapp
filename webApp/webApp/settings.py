@@ -164,7 +164,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'dataflair-debug.log',
+            'filename': 'django.log',
         },
 ########################################################################
         'console': {
