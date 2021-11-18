@@ -24,11 +24,20 @@ import statsd
 
 logger = logging.getLogger(__name__)
 
+def my_decorator(func):
+    def wrapper_function(*args, **kwargs):
+        start_time = datetime.now()
+        func(*args,  **kwargs)
+        end_time = datetime.now()
+        logger.info(f"Time for api: {end_time - start_time}")
+    return wrapper_function
+
 # Create your views here.
+counter = statsd.Counter("Counter")
+counterGet = statsd.Counter("Counter")
 class user(APIView):
     def post(self, request):
-        counter = statsd.Counter("My post API counter")
-        counter.increment('counter_name')
+        counter.increment('Post_api')
         start_time = datetime.now()
         data = request.data
 
@@ -48,7 +57,6 @@ class user(APIView):
             usr.save()
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
-            logger.debug("User Created")
             end_time = datetime.now()
             logger.info(f"Time for POST api: {end_time - start_time}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -64,6 +72,7 @@ class userSelf(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        counterGet.increment('Get_api')
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
         if len(auth) == 2:
