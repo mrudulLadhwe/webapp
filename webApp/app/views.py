@@ -79,7 +79,6 @@ class userSelf(APIView):
         counter = statsd.Counter("Counter")
         counter.increment('Get_api')
         start_time = datetime.now()
-        counterGet.increment('Get_api')
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
         query_start_time = datetime.now()
@@ -235,7 +234,7 @@ class profilePic(APIView):
                 try:
                     s3.Object(settings.AWS_S3_BUCKET_NAME, key).delete()
                     s3_end_time = datetime.now()
-                    logger.info(f"Time for post s3 api: {s3_end_time - s3_start_time}")
+                    logger.info(f"Time for delete s3 api: {s3_end_time - s3_start_time}")
                     usr.url = None
                     usr.file_name = None
                     usr.save()
