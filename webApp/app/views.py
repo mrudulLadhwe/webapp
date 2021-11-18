@@ -47,6 +47,7 @@ class user(APIView):
             return Response("Not Valid Email", status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            query_start_time = datetime.now()
             usr = AppUsers.objects.create(
                 username=data["username"],
                 first_name=data["first_name"],
@@ -55,6 +56,8 @@ class user(APIView):
             )
             usr.set_password(data["password"])
             usr.save()
+            query_end_time = datetime.now()
+            logger.info(f"Time for create user query: {query_end_time - query_start_time}")
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             end_time = datetime.now()
@@ -72,18 +75,25 @@ class userSelf(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        start_time = datetime.now()
         counterGet.increment('Get_api')
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
+        query_start_time = datetime.now()
         if len(auth) == 2:
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
+                query_end_time = datetime.now()
+                logger.info(f"Time for create user query: {query_end_time - query_start_time}")
                 serializer = WebAppUserSerializer(usr, many=False)
+                end_time = datetime.now()
+                logger.info(f"Time for GET api: {end_time - start_time}")
                 return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Error getting user", status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
+        start_time = datetime.now()
         data = request.data
         # get user
         auth = request.META["HTTP_AUTHORIZATION"].split()
@@ -91,6 +101,7 @@ class userSelf(APIView):
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.filter(username=uname).first()
+                
 
         if (
             (data.get("username") != uname)
@@ -104,16 +115,21 @@ class userSelf(APIView):
 
         # update user
         try:
+            query_start_time = datetime.now()
             usr.first_name = data["first_name"]
             usr.last_name = data["last_name"]
             usr.set_password(data["password"])
             usr.save()
+            query_end_time = datetime.now()
+            logger.info(f"Time for put user query: {query_end_time - query_start_time}")
         except Exception as e:
             return Response(
                 "All fields are mandatory", status=status.HTTP_404_NOT_FOUND
             )
 
         # serializer = WebAppUserSerializer(usr, many=False)
+        end_time = datetime.now()
+        logger.info(f"Time for PUT api: {end_time - start_time}")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -122,6 +138,7 @@ class profilePic(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        start_time = datetime.now()
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
         if len(auth) == 2:
@@ -129,13 +146,17 @@ class profilePic(APIView):
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
                 serializer = UserProfilePic(usr, many=False)
+            end_time = datetime.now()
+            logger.info(f"Time for GET profile api: {end_time - start_time}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
+        start_time = datetime.now()
         data = request.data
         usrid = None
 
+        s3_start_time = datetime.now()
         s3 = boto3.resource(
             "s3",
             region_name=settings.AWS_REGION_NAME,
@@ -164,6 +185,8 @@ class profilePic(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         uploadedOject = bucket.put_object(Body=decoded_file, Key=key)
+        s3_end_time = datetime.now()
+        logger.info(f"Time for post s3 api: {s3_end_time - s3_start_time}")
 
         if len(auth) == 2:
             if auth[0].lower() == "basic":
@@ -178,9 +201,12 @@ class profilePic(APIView):
                 )
                 usr.file_name = data["file_name"]
                 usr.save()
+                end_time = datetime.now()
+                logger.info(f"Time for POST profile api: {end_time - start_time}")
         return Response(status=status.HTTP_201_CREATED)
 
     def delete(self, request):
+        start_time = datetime.now()
         auth = request.META["HTTP_AUTHORIZATION"].split()
 
         if len(auth) == 2:
@@ -188,6 +214,7 @@ class profilePic(APIView):
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
                 file = usr.file_name
+                s3_start_time = datetime.now()
                 s3 = boto3.resource(
                     "s3",
                     region_name=settings.AWS_REGION_NAME,
@@ -196,9 +223,13 @@ class profilePic(APIView):
                 key = "media/{0}/{1}".format(str(usr.uuid), file)
                 try:
                     s3.Object(settings.AWS_S3_BUCKET_NAME, key).delete()
+                    s3_end_time = datetime.now()
+                    logger.info(f"Time for post s3 api: {s3_end_time - s3_start_time}")
                     usr.url = None
                     usr.file_name = None
                     usr.save()
+                    end_time = datetime.now()
+                    logger.info(f"Time for DELETE profile api: {end_time - start_time}")
                     return Response(status=status.HTTP_204_NO_CONTENT)
                 except Exception as err:
                     return Response(status=status.HTTP_404_NOT_FOUND)
