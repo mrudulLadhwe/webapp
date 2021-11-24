@@ -8,7 +8,7 @@ Perform CRU Operation on user using POST, PUT, GET http requests
 - Django Framework
 - PostgreSQL
 
-## Features
+## Features:
 - Django Rest Framework
 - Rest API's
 - Basic Authentication 
