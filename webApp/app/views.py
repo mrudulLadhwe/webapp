@@ -72,6 +72,7 @@ class user(APIView):
                     'ttl': ttl
                 }
             )
+            logger.info("insert failed dynamo>>>")
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             end_time = datetime.now()
