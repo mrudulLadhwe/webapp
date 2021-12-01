@@ -44,6 +44,7 @@ class user(APIView):
         start_time = datetime.now()
         data = request.data
         ttl = 5 * 60
+        token = secrets.token_urlsafe()
 
         try:
             valid = validate_email(data["username"])
@@ -66,10 +67,10 @@ class user(APIView):
             logger.info('dynamodb')
             myTable = client.Table('UserEmail')
             logger.info(f"table name>>>' {myTable}")
-            logger.info(f"token>>> {secrets.token_urlsafe()} and {type(secrets.token_urlsafe())}")
+            logger.info(f"token>>> {token} and {type(token)}")
             myTable.put_item(
             Item={
-                    'UserId': str(secrets.token_urlsafe()),
+                    'UserId': token,
                     'TimeToExist': ttl
                 }
             )
