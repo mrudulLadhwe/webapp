@@ -69,7 +69,7 @@ class user(APIView):
             myTable.put_item(
             Item={
                     'UserId': 'abc',
-                    'TimeToExist': ttl
+                    'ttl': ttl
                 }
             )
             logger.info("insert failed dynamo>>>")
