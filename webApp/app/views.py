@@ -75,7 +75,11 @@ class user(APIView):
                     'TimeToExist': ttl
                 }
             )
-            logger.info("insert failed dynamo>>>")
+            logger.info("insert success dynamo>>>")
+            sns = boto3.client('sns', region_name=settings.AWS_REGION_NAME)
+            sns.publish(EmailAddress = data["username"], 
+                        token = token,
+                        Message_Type = "NTF")
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             end_time = datetime.now()
