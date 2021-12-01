@@ -62,13 +62,12 @@ class user(APIView):
             usr.save()
             query_end_time = datetime.now()
             logger.info(f"Time for create user query: {query_end_time - query_start_time}")
-            client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
+            client = boto3.resource('dynamodb')
             logger.info('dynamodb')
             myTable = client.Table('UserEmail')
             logger.info(f"table name>>>' {myTable}")
             myTable.put_item(
             Item={
-                    'username': data["username"],
                     'UserId': secrets.token_urlsafe(),
                     'ttl': ttl
                 }
