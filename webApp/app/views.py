@@ -65,7 +65,7 @@ class user(APIView):
             client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
             logger.info('dynamodb')
             myTable = client.Table('UserEmail')
-            logger.info('table name>>>'+myTable)
+            logger.info(f"table name>>>' {myTable}")
             myTable.put_item(
             Item={
                     'username': data["username"],
