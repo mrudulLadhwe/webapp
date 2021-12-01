@@ -21,6 +21,8 @@ from django.conf import settings
 import logging
 from datetime import datetime
 import statsd
+from pprint import pprint
+import secrets
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +43,7 @@ class user(APIView):
         counter.increment('Post_api')
         start_time = datetime.now()
         data = request.data
+        ttl = 5 * 60
 
         try:
             valid = validate_email(data["username"])
@@ -59,6 +62,15 @@ class user(APIView):
             usr.save()
             query_end_time = datetime.now()
             logger.info(f"Time for create user query: {query_end_time - query_start_time}")
+            client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
+            myTable = client.Table('UserEmail')
+            response = myTable.put_item(
+            Item={
+                    'username': data["username"],
+                    'UserId': secrets.token_urlsafe(),
+                    'ttl': ttl
+                }
+            )
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             end_time = datetime.now()
