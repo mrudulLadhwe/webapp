@@ -78,15 +78,15 @@ class user(APIView):
             )
             logger.info("insert success dynamo>>>")
             sns = boto3.client('sns', region_name=settings.AWS_REGION_NAME)
-            sns_topic_arn = [tp['TopicArn'] for tp in sns.list_topics()['Topics'] if 'user-updates-topic' in tp['TopicArn']]
+            #sns_topic_arn = [tp['TopicArn'] for tp in sns.list_topics()['Topics'] if 'user-updates-topic' in tp['TopicArn']]
             body = { 'email' : data["username"], 
                     'token' : token,
                     'Message_Type' : "NTF"}
-            sns.publish(TopicArn = sns_topic_arn[0], 
+            sns.publish(TopicArn = 'user-updates-topic', 
                         Message= json.dumps(body),
                         Subject="Verification Email",
                         MessageStructure = 'json')
-            logger.info(f"Published multi-format message to topic %s. {sns_topic_arn[0]}")
+            logger.info(f"Published multi-format message to topic %s.")
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             end_time = datetime.now()
