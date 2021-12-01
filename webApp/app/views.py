@@ -80,7 +80,7 @@ class user(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response(
-                "Either Duplicate username or username, password, firstname and lastname is missing",
+                f"Either Duplicate username or username, password, firstname and lastname is missing {e}",
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
