@@ -70,7 +70,8 @@ class user(APIView):
             logger.info(f"token>>> {token} and {type(token)}")
             myTable.put_item(
             Item={
-                    'UserId': 'abcbcbcbcbc',
+                    'username': data["password"],
+                    'UserId': token,
                     'TimeToExist': ttl
                 }
             )
