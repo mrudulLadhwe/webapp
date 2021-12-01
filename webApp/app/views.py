@@ -23,6 +23,7 @@ from datetime import datetime
 import statsd
 from pprint import pprint
 import secrets
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -77,9 +78,15 @@ class user(APIView):
             )
             logger.info("insert success dynamo>>>")
             sns = boto3.client('sns', region_name=settings.AWS_REGION_NAME)
-            sns.publish(EmailAddress = data["username"], 
-                        token = token,
-                        Message_Type = "NTF")
+            sns_topic_arn = [tp['TopicArn'] for tp in sns.list_topics()['Topics'] if 'user-updates-topic' in tp['TopicArn']]
+            body = { 'email' : data["username"], 
+                    'token' : token,
+                    'Message_Type' : "NTF"}
+            sns.publish(TopicArn = sns_topic_arn[0], 
+                        Message= json.dumps(body),
+                        Subject="Verification Email",
+                        MessageStructure = 'json')
+            logger.info(f"Published multi-format message to topic %s. {sns_topic_arn[0]}")
             serializer = WebAppUserSerializer(usr, many=False)
             logger.info(f"User Created: \n\n {usr.first_name} (PK: {usr.email})")
             end_time = datetime.now()
