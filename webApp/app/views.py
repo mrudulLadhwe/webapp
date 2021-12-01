@@ -62,14 +62,14 @@ class user(APIView):
             usr.save()
             query_end_time = datetime.now()
             logger.info(f"Time for create user query: {query_end_time - query_start_time}")
-            client = boto3.resource('dynamodb')
+            client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
             logger.info('dynamodb')
             myTable = client.Table('UserEmail')
             logger.info(f"table name>>>' {myTable}")
             myTable.put_item(
             Item={
                     'UserId': 'abc',
-                    'ttl': ttl
+                    'TimeToExist': ttl
                 }
             )
             logger.info("insert failed dynamo>>>")
