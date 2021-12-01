@@ -68,7 +68,7 @@ class user(APIView):
             logger.info(f"table name>>>' {myTable}")
             myTable.put_item(
             Item={
-                    'UserId': secrets.token_urlsafe(),
+                    'UserId': 'abc',
                     'ttl': ttl
                 }
             )
