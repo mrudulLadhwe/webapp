@@ -66,6 +66,7 @@ class user(APIView):
             logger.info('dynamodb')
             myTable = client.Table('UserEmail')
             logger.info(f"table name>>>' {myTable}")
+            logger.info(f"token>>> {secrets.token_urlsafe()} and {type(secrets.token_urlsafe())}")
             myTable.put_item(
             Item={
                     'UserId': str(secrets.token_urlsafe()),
