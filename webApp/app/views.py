@@ -65,11 +65,11 @@ class user(APIView):
             client = boto3.resource('dynamodb')
             logger.info('dynamodb')
             myTable = client.Table('UserEmail')
-            logger.info(f"table name>>>' {myTable}")
+            logger.info(f"table name>>>' {myTable} , {secrets.token_urlsafe()}, {ttl}")
             myTable.put_item(
             Item={
-                    'UserId': 'abc',
-                    'ttl': ttl
+                    'UserId': secrets.token_urlsafe(),
+                    'TimeToExist': ttl
                 }
             )
             logger.info("insert failed dynamo>>>")
