@@ -112,7 +112,7 @@ class userSelf(APIView):
         if len(auth) == 2:
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
-                usr = AppUsers.objects.get(username=uname)
+                usr = AppUsers.objects.using('read_replica').get(username=uname)
                 if usr.verified == True:
                     query_end_time = datetime.now()
                     logger.info(f"Time for create user query: {query_end_time - query_start_time}")
@@ -179,7 +179,7 @@ class profilePic(APIView):
         if len(auth) == 2:
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
-                usr = AppUsers.objects.get(username=uname)
+                usr = AppUsers.objects.using('read_replica').get(username=uname)
                 serializer = UserProfilePic(usr, many=False)
                 if usr.verified == True:   
                     end_time = datetime.now()
