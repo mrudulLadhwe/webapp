@@ -4,6 +4,7 @@ cd /home/ubuntu
 ls
 cd webapp
 ls
+sudo apt-get update
 sudo apt install -y python3-pip
 cd webApp
 sudo pip install -r requirement.txt
