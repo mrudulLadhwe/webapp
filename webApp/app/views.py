@@ -81,9 +81,8 @@ class user(APIView):
             #sns_topic_arn = [tp['TopicArn'] for tp in sns.list_topics()['Topics'] if 'user-updates-topic' in tp['TopicArn']]
             body = { 'email' : data["username"], 
                     'token' : token,
-                    'Message_Type' : "NTF"}
-            
-            sns.publish(TopicArn = settings.AWS_SNS_TOPIC, 
+                    'Message_Type' : "NTF"}    
+            sns.publish(TopicArn = 'user-updates-topic', 
                         Message= json.dumps(body),
                         Subject="Verification Email",
                         MessageStructure = 'json')

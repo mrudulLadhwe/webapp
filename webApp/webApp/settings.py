@@ -155,7 +155,6 @@ AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME", "us-east-1")
 
 AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")
 
-AWS_SNS_TOPIC = os.environ.get("AWS_SNS_TOPIC", "user-updates-topic")
 
 #logger
 # DataFlair #Logging Information
