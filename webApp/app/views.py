@@ -82,7 +82,8 @@ class user(APIView):
             body = { 'email' : data["username"], 
                     'token' : token,
                     'Message_Type' : "NTF"}
-            sns.publish(TopicArn = 'user-updates-topic', 
+            topic_arn = 'user-updates-topic'
+            sns.publish(TopicArn = topic_arn, 
                         Message= json.dumps(body),
                         Subject="Verification Email",
                         MessageStructure = 'json')
