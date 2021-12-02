@@ -26,6 +26,10 @@ class AppUsers(AbstractUser):
     url = models.CharField(max_length=500, blank=True, null=True)
     upload_date = models.DateField(
         auto_now_add=True, blank=True, null=True, editable=False
+    ) 
+    verified = models.BooleanField(default=False)
+    verified_on = models.DateTimeField(
+        blank=True, null=True, editable=False
     )
 
     REQUIRED_FIELDS = ["first_name", "last_name", "password", "file_name", "url"]

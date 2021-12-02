@@ -24,5 +24,5 @@ urlpatterns = [
     path("v1/user/self", views.userSelf.as_view()),
     path("v1/user/self/pic", views.profilePic.as_view()),
     path("healthstatus", views.healthStatus.as_view()),
-
+    path("v1/verifyUserEmail", views.verifyUser.as_view())
 ]
