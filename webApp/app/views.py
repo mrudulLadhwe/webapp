@@ -285,6 +285,12 @@ class verifyUser(APIView):
             logger.info(f"email dynamo {email}")
             token = request.GET.get('token','')
             logger.info(f"token dynamo {token}")
+            client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
+            logger.info('verify dynamo yo')
+            myTable = client.Table('UserEmail')
+            logger.info(f"v table name dynamo>>>' {myTable}")
+            value = myTable.get_item(Key={'username':email, 'UserId':token})
+            logger.info(f"value dynamo>>>' {value}")
             return Response(status=status.HTTP_200_OK)
         except Exception as err:
             logger.info(f"verify dynamo {err}")
