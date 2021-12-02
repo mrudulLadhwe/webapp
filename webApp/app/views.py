@@ -113,12 +113,13 @@ class userSelf(APIView):
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
-                query_end_time = datetime.now()
-                logger.info(f"Time for create user query: {query_end_time - query_start_time}")
-                serializer = WebAppUserSerializer(usr, many=False)
-                end_time = datetime.now()
-                logger.info(f"Time for GET api: {end_time - start_time}")
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                if usr.verified == True:
+                    query_end_time = datetime.now()
+                    logger.info(f"Time for create user query: {query_end_time - query_start_time}")
+                    serializer = WebAppUserSerializer(usr, many=False)
+                    end_time = datetime.now()
+                    logger.info(f"Time for GET api: {end_time - start_time}")
+                    return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Error getting user", status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
@@ -133,35 +134,36 @@ class userSelf(APIView):
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.filter(username=uname).first()
                 
+        if usr.verified == True:
+            if (
+                (data.get("username") != uname)
+                or data.get("account_created")
+                or data.get("account_updated")
+            ):
+                return Response(
+                    "Username,account_created or account_updated cannot be updated",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-        if (
-            (data.get("username") != uname)
-            or data.get("account_created")
-            or data.get("account_updated")
-        ):
-            return Response(
-                "Username,account_created or account_updated cannot be updated",
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            # update user
+            try:
+                query_start_time = datetime.now()
+                usr.first_name = data["first_name"]
+                usr.last_name = data["last_name"]
+                usr.set_password(data["password"])
+                usr.save()
+                query_end_time = datetime.now()
+                logger.info(f"Time for put user query: {query_end_time - query_start_time}")
+            except Exception as e:
+                return Response(
+                    "All fields are mandatory", status=status.HTTP_404_NOT_FOUND
+                )
 
-        # update user
-        try:
-            query_start_time = datetime.now()
-            usr.first_name = data["first_name"]
-            usr.last_name = data["last_name"]
-            usr.set_password(data["password"])
-            usr.save()
-            query_end_time = datetime.now()
-            logger.info(f"Time for put user query: {query_end_time - query_start_time}")
-        except Exception as e:
-            return Response(
-                "All fields are mandatory", status=status.HTTP_404_NOT_FOUND
-            )
-
-        # serializer = WebAppUserSerializer(usr, many=False)
-        end_time = datetime.now()
-        logger.info(f"Time for PUT api: {end_time - start_time}")
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            # serializer = WebAppUserSerializer(usr, many=False)
+            end_time = datetime.now()
+            logger.info(f"Time for PUT api: {end_time - start_time}")
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response("UNAUTHORIZED", status=status.HTTP_401_UNAUTHORIZED)
 
 
 class profilePic(APIView):
@@ -179,9 +181,12 @@ class profilePic(APIView):
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
                 serializer = UserProfilePic(usr, many=False)
-            end_time = datetime.now()
-            logger.info(f"Time for GET profile api: {end_time - start_time}")
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            if usr.verified == True:   
+                end_time = datetime.now()
+                logger.info(f"Time for GET profile api: {end_time - start_time}")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            if usr.verified == False:
+                return Response(status.HTTP_401_UNAUTHORIZED)
         return Response(status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
@@ -201,6 +206,8 @@ class profilePic(APIView):
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
+                if usr.verified == False:
+                    return Response(status.HTTP_401_UNAUTHORIZED)
                 usrid = usr.uuid
                 if usr.url:
                     key = "media/{0}/{1}".format(str(usr.uuid), usr.file_name)
@@ -250,6 +257,8 @@ class profilePic(APIView):
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
+                if usr.verified == False:
+                    return Response(status.HTTP_401_UNAUTHORIZED)
                 file = usr.file_name
                 s3_start_time = datetime.now()
                 s3 = boto3.resource(
