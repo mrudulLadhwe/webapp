@@ -90,6 +90,14 @@ DATABASES = {
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
         "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+    },
+    "read_replica" : {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("POSTGRES_DB", "webApp"),
+        "USER": os.environ.get("POSTGRES_USER", ""),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
+        "HOST": os.environ.get("DB_HOST_REPLICA", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -156,6 +164,8 @@ AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME", "us-east-1")
 AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME", "devbuu")
 
 AWS_SNS_TOPIC = os.environ.get("AWS_SNS_TOPIC", "user-updates-topic")
+
+DB_HOST_REPLICA = os.environ.get("DB_HOST_REPLICA", "")
 
 #logger
 # DataFlair #Logging Information
