@@ -186,7 +186,7 @@ class profilePic(APIView):
                     logger.info(f"Time for GET profile api: {end_time - start_time}")
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 if usr.verified == False:
-                    return Response(status.HTTP_401_UNAUTHORIZED)
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
         return Response(status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
