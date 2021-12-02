@@ -55,6 +55,6 @@ Perform CRU Operation on user using POST, PUT, GET http requests
   - This project has two test cases 
     - For Post request testing 
     - For Get request testing for invalid user
-  - `python manage.py test`.
+  - `python manage.py test`..
 
 
