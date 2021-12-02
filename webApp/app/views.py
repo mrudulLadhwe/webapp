@@ -181,12 +181,12 @@ class profilePic(APIView):
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
                 serializer = UserProfilePic(usr, many=False)
-            if usr.verified == True:   
-                end_time = datetime.now()
-                logger.info(f"Time for GET profile api: {end_time - start_time}")
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            if usr.verified == False:
-                return Response(status.HTTP_401_UNAUTHORIZED)
+                if usr.verified == True:   
+                    end_time = datetime.now()
+                    logger.info(f"Time for GET profile api: {end_time - start_time}")
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                if usr.verified == False:
+                    return Response(status.HTTP_401_UNAUTHORIZED)
         return Response(status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
@@ -195,6 +195,7 @@ class profilePic(APIView):
         start_time = datetime.now()
         data = request.data
         usrid = None
+        isVerified = False
 
         s3_start_time = datetime.now()
         s3 = boto3.resource(
@@ -206,46 +207,48 @@ class profilePic(APIView):
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
-                if usr.verified == False:
-                    return Response(status.HTTP_401_UNAUTHORIZED)
-                usrid = usr.uuid
-                if usr.url:
-                    key = "media/{0}/{1}".format(str(usr.uuid), usr.file_name)
-                    try:
-                        s3.Object(settings.AWS_S3_BUCKET_NAME, key).delete()
-                        usr.url = None
-                        usr.file_name = None
-                        usr.save()
-                    except Exception as err:
-                        return Response(status=status.HTTP_404_NOT_FOUND)
+                if usr.verified == True:
+                    isVerified = True
+                    usrid = usr.uuid
+                    if usr.url:
+                        key = "media/{0}/{1}".format(str(usr.uuid), usr.file_name)
+                        try:
+                            s3.Object(settings.AWS_S3_BUCKET_NAME, key).delete()
+                            usr.url = None
+                            usr.file_name = None
+                            usr.save()
+                        except Exception as err:
+                            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        bucket = s3.Bucket(settings.AWS_S3_BUCKET_NAME)
-        key = "media/{0}/{1}".format(str(usrid), data.get("file_name", "img"))
-        try:
-            decoded_file = base64.b64decode(data["file_content"])
-        except Exception as err:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if isVerified == True:
+            bucket = s3.Bucket(settings.AWS_S3_BUCKET_NAME)
+            key = "media/{0}/{1}".format(str(usrid), data.get("file_name", "img"))
+            try:
+                decoded_file = base64.b64decode(data["file_content"])
+            except Exception as err:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        uploadedOject = bucket.put_object(Body=decoded_file, Key=key)
-        s3_end_time = datetime.now()
-        logger.info(f"Time for post s3 api: {s3_end_time - s3_start_time}")
+            uploadedOject = bucket.put_object(Body=decoded_file, Key=key)
+            s3_end_time = datetime.now()
+            logger.info(f"Time for post s3 api: {s3_end_time - s3_start_time}")
 
-        if len(auth) == 2:
-            if auth[0].lower() == "basic":
-                uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
-                usr = AppUsers.objects.get(username=uname)
-                print(">>>>>>>>>>>", usr.uuid)
-                usr.url = (
-                    "https://"
-                    + settings.AWS_S3_BUCKET_NAME
-                    + ".s3.amazonaws.com/"
-                    + uploadedOject.key
-                )
-                usr.file_name = data["file_name"]
-                usr.save()
-                end_time = datetime.now()
-                logger.info(f"Time for POST profile api: {end_time - start_time}")
-        return Response(status=status.HTTP_201_CREATED)
+            if len(auth) == 2:
+                if auth[0].lower() == "basic":
+                    uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
+                    usr = AppUsers.objects.get(username=uname)
+                    print(">>>>>>>>>>>", usr.uuid)
+                    usr.url = (
+                        "https://"
+                        + settings.AWS_S3_BUCKET_NAME
+                        + ".s3.amazonaws.com/"
+                        + uploadedOject.key
+                    )
+                    usr.file_name = data["file_name"]
+                    usr.save()
+                    end_time = datetime.now()
+                    logger.info(f"Time for POST profile api: {end_time - start_time}")
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def delete(self, request):
         counter = statsd.Counter("Counter")
@@ -257,28 +260,27 @@ class profilePic(APIView):
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).decode("utf8").split(":", 1)
                 usr = AppUsers.objects.get(username=uname)
-                if usr.verified == False:
-                    return Response(status.HTTP_401_UNAUTHORIZED)
-                file = usr.file_name
-                s3_start_time = datetime.now()
-                s3 = boto3.resource(
-                    "s3",
-                    region_name=settings.AWS_REGION_NAME,
-                )
-                print("file>>>", file)
-                key = "media/{0}/{1}".format(str(usr.uuid), file)
-                try:
-                    s3.Object(settings.AWS_S3_BUCKET_NAME, key).delete()
-                    s3_end_time = datetime.now()
-                    logger.info(f"Time for delete s3 api: {s3_end_time - s3_start_time}")
-                    usr.url = None
-                    usr.file_name = None
-                    usr.save()
-                    end_time = datetime.now()
-                    logger.info(f"Time for DELETE profile api: {end_time - start_time}")
-                    return Response(status=status.HTTP_204_NO_CONTENT)
-                except Exception as err:
-                    return Response(status=status.HTTP_404_NOT_FOUND)
+                if usr.verified == True:
+                    file = usr.file_name
+                    s3_start_time = datetime.now()
+                    s3 = boto3.resource(
+                        "s3",
+                        region_name=settings.AWS_REGION_NAME,
+                    )
+                    print("file>>>", file)
+                    key = "media/{0}/{1}".format(str(usr.uuid), file)
+                    try:
+                        s3.Object(settings.AWS_S3_BUCKET_NAME, key).delete()
+                        s3_end_time = datetime.now()
+                        logger.info(f"Time for delete s3 api: {s3_end_time - s3_start_time}")
+                        usr.url = None
+                        usr.file_name = None
+                        usr.save()
+                        end_time = datetime.now()
+                        logger.info(f"Time for DELETE profile api: {end_time - start_time}")
+                        return Response(status=status.HTTP_204_NO_CONTENT)
+                    except Exception as err:
+                        return Response(status=status.HTTP_404_NOT_FOUND)
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
