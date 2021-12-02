@@ -289,7 +289,7 @@ class verifyUser(APIView):
             logger.info('verify dynamo yo')
             myTable = client.Table('UserEmail')
             logger.info(f"v table name dynamo>>>' {myTable}")
-            value = myTable.get_item(Key={'UserId':token, 'username':email})
+            value = myTable.get_item(Key={'username':email, 'UserId':token})
             logger.info(f"value dynamo>>>' {value}")
             return Response(status=status.HTTP_200_OK)
         except Exception as err:
