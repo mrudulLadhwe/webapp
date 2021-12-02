@@ -84,7 +84,7 @@ class user(APIView):
                     'Message_Type' : "NTF"}    
             sns.publish(Message= json.dumps(body),
                         Subject="Verification Email",
-                        TopicArn = settings.AWS_SNS_TOPIC,
+                        TopicArn = "arn:aws:sns:us-east-1:695302741031:user-updates-topic",
                         MessageStructure = 'json')
             logger.info(f"Published multi-format message to topic %s.")
             serializer = WebAppUserSerializer(usr, many=False)
