@@ -27,7 +27,7 @@ class AppUsers(AbstractUser):
     upload_date = models.DateField(
         auto_now_add=True, blank=True, null=True, editable=False
     ) 
-    verified = models.BooleanField(default=False)
+    verified = models.BooleanField(default=False, null=True)
     verified_on = models.DateTimeField(
         blank=True, null=True, editable=False
     )
