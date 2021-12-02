@@ -279,21 +279,23 @@ class healthStatus(APIView):
 
 class verifyUser(APIView):
     def get(self,request):
-        email = request.GET.get('email','')
-        token = request.GET.get('token','')
-        client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
-        logger.info('verify dynamo')
-        myTable = client.Table('UserEmail')
-        logger.info(f"v table name>>>' {myTable}")
-        value = myTable.get_item(Key={'username':email, 'UserId':token})
-        if  round(time.time()) < value.get('TimeToExist',0):
-            usr = AppUsers.objects.get(username=email)
-            usr.verified = True
-            usr.verified_on = datetime.now()
-            usr.save()
-            return Response(status=status.status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-        
+        try:
+            email = request.GET.get('email','')
+            token = request.GET.get('token','')
+            client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
+            logger.info('verify dynamo')
+            myTable = client.Table('UserEmail')
+            logger.info(f"v table name>>>' {myTable}")
+            value = myTable.get_item(Key={'username':email, 'UserId':token})
+            if  round(time.time()) < value.get('TimeToExist',0):
+                usr = AppUsers.objects.get(username=email)
+                usr.verified = True
+                usr.verified_on = datetime.now()
+                usr.save()
+                return Response(status=status.status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err,status=status.HTTP_401_UNAUTHORIZED)
+          
 
 
     
