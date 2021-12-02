@@ -279,11 +279,7 @@ class healthStatus(APIView):
 
 class verifyUser(APIView):
     def get(self,request):
-        try:
-            logger.info('inside')
-            return Response(status=status.status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err,status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.status.HTTP_200_OK)
         #     email = request.GET.get('email','')
         #     logger.info(f"verify dynamo {email}")
         #     token = request.GET.get('token','')
