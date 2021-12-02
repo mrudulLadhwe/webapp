@@ -281,6 +281,10 @@ class verifyUser(APIView):
     def get(self,request):
         try:
             logger.info("verify dynamo")
+            email = request.GET.get('email','')
+            logger.info(f"email dynamo {email}")
+            token = request.GET.get('token','')
+            logger.info(f"token dynamo {token}")
             return Response(status=status.HTTP_200_OK)
         except Exception as err:
             logger.info(f"verify dynamo {err}")
