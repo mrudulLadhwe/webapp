@@ -77,12 +77,12 @@ class user(APIView):
                 }
             )
             logger.info("insert success dynamo>>>")
-            sns = boto3.resource('sns', region_name=settings.AWS_REGION_NAME)
+            sns = boto3.client('sns', region_name=settings.AWS_REGION_NAME)
             #sns_topic_arn = [tp['TopicArn'] for tp in sns.list_topics()['Topics'] if 'user-updates-topic' in tp['TopicArn']]
             body = { 'email' : data["username"], 
                     'token' : token,
                     'Message_Type' : "NTF"}    
-            sns.publish(TopicArn = 'user-updates-topic', 
+            sns.publish(TopicArn = settings.AWS_SNS_TOPIC, 
                         Message= json.dumps(body),
                         Subject="Verification Email",
                         MessageStructure = 'json')
