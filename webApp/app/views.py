@@ -280,7 +280,9 @@ class healthStatus(APIView):
 class verifyUser(APIView):
     def get(self,request):
         try:
+            logger.info('inside')
             email = request.GET.get('email','')
+            logger.info(f"verify dynamo {email}")
             token = request.GET.get('token','')
             client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
             logger.info('verify dynamo')
