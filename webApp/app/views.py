@@ -82,9 +82,9 @@ class user(APIView):
             body = { 'email' : data["username"], 
                     'token' : token,
                     'Message_Type' : "NTF"}    
-            sns.publish(TopicArn = settings.AWS_SNS_TOPIC, 
-                        Message= json.dumps(body),
+            sns.publish(Message= json.dumps(body),
                         Subject="Verification Email",
+                        TopicArn = settings.AWS_SNS_TOPIC,
                         MessageStructure = 'json')
             logger.info(f"Published multi-format message to topic %s.")
             serializer = WebAppUserSerializer(usr, many=False)
