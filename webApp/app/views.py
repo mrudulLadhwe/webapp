@@ -282,9 +282,9 @@ class verifyUser(APIView):
         try:
             logger.info("verify dynamo")
             email = request.GET.get('email','')
-            logger.info(f"email dynamo {email}, {type(email)}")
+            logger.info(f"email dynamo {email}")
             token = request.GET.get('token','')
-            logger.info(f"token dynamo {token}, {type(token)}")
+            logger.info(f"token dynamo {token}")
             client = boto3.resource('dynamodb', region_name=settings.AWS_REGION_NAME)
             logger.info('verify dynamo yo')
             myTable = client.Table('UserEmail')
