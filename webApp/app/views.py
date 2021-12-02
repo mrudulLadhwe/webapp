@@ -82,8 +82,7 @@ class user(APIView):
             body = { 'email' : data["username"], 
                     'token' : token,
                     'Message_Type' : "NTF"}
-            topic_arn = sns.get_topic_attributes(
-                        TopicArn = 'user-updates-topic')
+            
             sns.publish(TopicArn = settings.AWS_SNS_TOPIC, 
                         Message= json.dumps(body),
                         Subject="Verification Email",
