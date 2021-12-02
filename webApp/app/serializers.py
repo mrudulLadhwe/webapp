@@ -11,6 +11,8 @@ class WebAppUserSerializer(serializers.Serializer):
     username = serializers.EmailField()
     account_created = serializers.DateTimeField()
     account_updated = serializers.DateTimeField()
+    verified = serializers.BooleanField()
+    verified_on = serializers.DateTimeField()
 
     class Meta:
         model = AppUsers
