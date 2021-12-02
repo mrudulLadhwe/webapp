@@ -77,7 +77,7 @@ class user(APIView):
                 }
             )
             logger.info("insert success dynamo>>>")
-            sns = boto3.client('sns', region_name=settings.AWS_REGION_NAME)
+            sns = boto3.resource('sns', region_name=settings.AWS_REGION_NAME)
             #sns_topic_arn = [tp['TopicArn'] for tp in sns.list_topics()['Topics'] if 'user-updates-topic' in tp['TopicArn']]
             sns_topic_arn = [tp['TopicArn'] for tp in sns.topics.all() if 'user-updates-topic' in tp['TopicArn']]
             body = { 'email' : data["username"], 
