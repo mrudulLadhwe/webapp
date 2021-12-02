@@ -277,8 +277,10 @@ class healthStatus(APIView):
     def get(self, request):
         return Response(status=status.HTTP_200_OK)
 
-# class verifyUser(APIView):
-#     def get(self,request):
+class verifyUser(APIView):
+    def get(self,request):
+        return Response(status=status.HTTP_200_OK)
+
 #         try:
 #             email = request.GET.get('email','')
 #             token = request.GET.get('token','')
