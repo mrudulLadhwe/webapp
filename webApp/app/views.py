@@ -291,6 +291,14 @@ class verifyUser(APIView):
             logger.info(f"v table name dynamo>>>' {myTable}")
             value = myTable.get_item(Key={'UserId':token})
             logger.info(f"value dynamo>>>' {value}")
+            logger.info(f"time now dynamo>>>' {round(time.time())}")
+            item = value.get('Item','')
+            logger.info(f"value dynamo>>>' {item.get('TimeToExist',0)}")
+            if  round(time.time()) < item.get('TimeToExist',0):
+                usr = AppUsers.objects.get(username=email)
+                usr.verified = True
+                usr.verified_on = datetime.now()
+                usr.save()
             return Response(status=status.HTTP_200_OK)
         except Exception as err:
             logger.info(f"verify dynamo {err}")
