@@ -88,7 +88,7 @@ DATABASES = {
         "NAME": os.environ.get("POSTGRES_DB", "webApp"),
         "USER": os.environ.get("POSTGRES_USER", ""),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
-        "HOST": os.environ.get("POSTGRES_HOST", "localhost")+("?sslmode=require"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
         "OPTIONS": {'sslmode': 'require'}
     },
